@@ -180,15 +180,6 @@ def load(dataname, info, normalization, args):
     n_classes = int(max(Y)) + 1 if task_type == 'multiclass' else None
     ### !!! CRUCIAL for neural networks when solving regression problems !!!
     if task_type == 'regression':
-        #### numerical label normalziation
-        # if normalization == 'z_score':
-        #     y_mean = Y[:train_size].mean().item()
-        #     y_std = Y[:train_size].std().item()
-        #     Y = (Y - y_mean) / y_std
-        # elif normalization == 'minmax':
-        #     y_mean = Y[:train_size].min().item()
-        #     y_std = Y[:train_size].max().item() - Y[:train_size].min().item()
-        #     Y = (Y - y_mean) / y_std
         y_mean = Y[:train_size].mean().item()
         y_std = Y[:train_size].std().item()
         Y = (Y - y_mean) / y_std
@@ -215,8 +206,8 @@ def load(dataname, info, normalization, args):
     X['train'], X['val'], X['test'] = X_all[:train_size], X_all[train_size:train_size+val_size], X_all[-test_size:]
     y['train'], y['val'], y['test'] = Y[:train_size], Y[train_size:train_size+val_size], Y[-test_size:]
 
-    X = {k: torch.tensor(v, dtype=torch.float).cuda() for k, v in X.items()}
-    y = {k: torch.tensor(v).cuda() for k, v in y.items()}
+    X = {k: torch.tensor(v, dtype=torch.float).cpu() for k, v in X.items()}
+    y = {k: torch.tensor(v).cpu() for k, v in y.items()}
 
     return X, y, n_classes, y_mean, y_std, categories
 
